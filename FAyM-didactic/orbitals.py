@@ -186,9 +186,6 @@ line_P, = fig_P.data
 
 # Actualiza fig_P
 def calculate_P(model=model, Z=Z, N=N, A=A, a1=a1, a2=a2, H=H, D=D, npt=npt, rmc=rmc, E=E, L=L):
-    if E>0.: # E_slider definido positivo
-        E = -E
-
     r, V = _calc_pot(model, Z, N, A, a1, a2, H, D, npt, rmc) # No se usa calculate_potential
     P = _calc(r, V, Z, E, L)
     line_P.x = r[1:]
@@ -209,147 +206,104 @@ model_dropdown = widgets.Dropdown(
     disabled=False,
 )
 
-Z_slider = widgets.IntSlider(
+Z_text = widgets.BoundedIntText(
     value=Z,
     min=0,
     max=100,
     step=1,
     description='Nuclear Z:',
-    disabled=False,
-    continuous_update=False,
-    orientation='horizontal',
-    readout=True,
-    readout_format='d'
+    disabled=False
 )
 
-N_slider = widgets.IntSlider(
+
+N_text = widgets.BoundedIntText(
     value=N,
     min=0,
-    max=50,
+    max=100,
     step=1,
     description='N electrons:',
-    disabled=False,
-    continuous_update=False,
-    orientation='horizontal',
-    readout=True,
-    readout_format='d'
+    disabled=False
 )
 
-A_slider = widgets.FloatSlider(
+A_text = widgets.BoundedFloatText(
     value=A,
     min=0.,
     max=2.,
     step=0.001,
     description='A:',
-    disabled=False,
-    continuous_update=False,
-    orientation='horizontal',
-    readout=True,
-    readout_format='.4f'
+    disabled=False
 )
 
-a1_slider = widgets.FloatSlider(
+a1_text = widgets.BoundedFloatText(
     value=a1,
     min=0.,
     max=3.,
     step=0.001,
     description='a1:',
-    disabled=False,
-    continuous_update=False,
-    orientation='horizontal',
-    readout=True,
-    readout_format='.4f'
+    disabled=False
 )
 
-a2_slider = widgets.FloatSlider(
+a2_text = widgets.BoundedFloatText(
     value=a2,
     min=0.,
     max=20.,
     step=0.001,
     description='a2:',
-    disabled=False,
-    continuous_update=False,
-    orientation='horizontal',
-    readout=True,
-    readout_format='.4f'
+    disabled=False
 )
 
-H_slider = widgets.FloatSlider(
+H_text = widgets.BoundedFloatText(
     value=H,
     min=0.,
     max=10.,
     step=0.001,
     description='H:',
-    disabled=False,
-    continuous_update=False,
-    orientation='horizontal',
-    readout=True,
-    readout_format='.4f'
+    disabled=False
 )
 
-D_slider = widgets.FloatSlider(
+D_text = widgets.BoundedFloatText(
     value=D,
     min=0.,
     max=2.,
     step=0.0001,
     description='D:',
-    disabled=False,
-    continuous_update=False,
-    orientation='horizontal',
-    readout=True,
-    readout_format='.4f'
+    disabled=False
 )
 
-npt_slider = widgets.IntSlider(
+npt_text = widgets.BoundedIntText(
     value=npt,
     min=10,
     max=1000,
     step=1,
     description='N. of points:',
-    disabled=False,
-    continuous_update=False,
-    orientation='horizontal',
-    readout=True,
-    readout_format='d'
+    disabled=False
 )
 
-rmc_slider = widgets.FloatSlider(
+rmc_text = widgets.BoundedFloatText(
     value=rmc,
     min=0.1,
     max=200.,
     step=0.1,
     description='Max. radius:',
-    disabled=False,
-    continuous_update=False,
-    orientation='horizontal',
-    readout=True,
-    readout_format='.4f'
+    disabled=False
 )
 
-E_slider = widgets.FloatSlider(
-    value=-E,
-    min=0.,
-    max=2000.,
+E_text = widgets.BoundedFloatText(
+    value=E,
+    min=-2000.,
+    max=0.,
     step=0.01,
-    description='|E| (a.u.):',
-    disabled=False,
-    continuous_update=False,
-    orientation='horizontal',
-    readout=True,
-    readout_format='.4f'
+    description='E (a.u.):',
+    disabled=False
 )
 
-L_slider = widgets.IntSlider(
+L_text = widgets.BoundedIntText(
     value=L,
     min=0,
     max=10,
     step=1,
     description='L:',
-    disabled=False,
-    continuous_update=False,
-    orientation='horizontal',
-    readout=True,
-    readout_format='d'
+    disabled=False
 )
 
 file_box = widgets.Text(
@@ -362,41 +316,41 @@ save_button = widgets.Button(description="Save")
 save_box = widgets.Box([file_box, save_button])
 
 # Genera un link entre widgets para asegurar N<=Z
-dl = widgets.dlink((Z_slider, 'value'), (N_slider, 'max'))
+dl = widgets.dlink((Z_text, 'value'), (N_text, 'max'))
 
 # Activa/desactiva parámetros según modelo de potencial
 # y activa botón Save en cada modificación de parámetros
 def update_widgets(model, Z, N, A, a1, a2, H, D, npt, rmc, E, L):
     if model=='Hdg':
         # Desactiva widgets de N, A, a1, a2, H, D
-        N_slider.disabled = True
-        A_slider.disabled = True
-        a1_slider.disabled = True
-        a2_slider.disabled = True
-        H_slider.disabled = True
-        D_slider.disabled = True
+        N_text.disabled = True
+        A_text.disabled = True
+        a1_text.disabled = True
+        a2_text.disabled = True
+        H_text.disabled = True
+        D_text.disabled = True
 
     elif model=='SdR':
         # Activa widgets de A, a1, a2
-        A_slider.disabled = False
-        a1_slider.disabled = False
-        a2_slider.disabled = False
+        A_text.disabled = False
+        a1_text.disabled = False
+        a2_text.disabled = False
         # Desactiva widgets de N, H, D
-        N_slider.disabled = True
-        H_slider.disabled = True
-        D_slider.disabled = True
+        N_text.disabled = True
+        H_text.disabled = True
+        D_text.disabled = True
         # Da el valor de N=Z porque SdR asume átomo neutro
-        N_slider.value = Z
+        N_text.value = Z
 
     elif model=='GSZ':
         # Activa widgets de N, H, D
-        N_slider.disabled = False
-        H_slider.disabled = False
-        D_slider.disabled = False
+        N_text.disabled = False
+        H_text.disabled = False
+        D_text.disabled = False
         # Desactiva widgets de A, a1, a2
-        A_slider.disabled = True
-        a1_slider.disabled = True
-        a2_slider.disabled = True
+        A_text.disabled = True
+        a1_text.disabled = True
+        a2_text.disabled = True
 
     # Activa botón de guardar y pone texto "Save"
     # en caso de que no esté hecho
@@ -409,16 +363,16 @@ def update_widgets(model, Z, N, A, a1, a2, H, D, npt, rmc, E, L):
 def calculate():
     # Genera gráfico interactivo del orbital
     # Nótese que calculate_P incluye _calc_pot
-    output = interactive(calculate_P, model=model_dropdown, Z=Z_slider, N=N_slider,
-                         A=A_slider, a1=a1_slider, a2=a2_slider,
-                         H=H_slider, D=D_slider,
-                         npt=npt_slider, rmc=rmc_slider,
-                         E=E_slider, L=L_slider);
-    widget_control = interactive(update_widgets, model=model_dropdown, Z=Z_slider, N=N_slider,
-                         A=A_slider, a1=a1_slider, a2=a2_slider,
-                         H=H_slider, D=D_slider,
-                         npt=npt_slider, rmc=rmc_slider,
-                         E=E_slider, L=L_slider);
+    output = interactive(calculate_P, model=model_dropdown, Z=Z_text, N=N_text,
+                         A=A_text, a1=a1_text, a2=a2_text,
+                         H=H_text, D=D_text,
+                         npt=npt_text, rmc=rmc_text,
+                         E=E_text, L=L_text);
+    widget_control = interactive(update_widgets, model=model_dropdown, Z=Z_text, N=N_text,
+                         A=A_text, a1=a1_text, a2=a2_text,
+                         H=H_text, D=D_text,
+                         npt=npt_text, rmc=rmc_text,
+                         E=E_text, L=L_text);
     display(output)
     display(save_box)
 

@@ -167,56 +167,40 @@ def calculate_Rho_Zef(Z=Z, N=N, npt=npt, x0=x0, x=x, Fi=Fi):
 
 #### Widgets de las figuras interactivas ####
 #############################################
-Z_slider = widgets.IntSlider(
+Z_text = widgets.BoundedIntText(
     value=Z,
     min=0,
     max=100,
     step=1,
     description='Nuclear Z:',
-    disabled=False,
-    continuous_update=False,
-    orientation='horizontal',
-    readout=True,
-    readout_format='d'
+    disabled=False
 )
 
-N_slider = widgets.IntSlider(
+N_text = widgets.BoundedIntText(
     value=N,
     min=0,
     max=50,
     step=1,
     description='N electrons:',
-    disabled=False,
-    continuous_update=False,
-    orientation='horizontal',
-    readout=True,
-    readout_format='d'
+    disabled=False
 )
 
-npt_slider = widgets.IntSlider(
+npt_text = widgets.BoundedIntText(
     value=npt,
     min=10,
     max=5000,
     step=1,
     description='N. of points:',
-    disabled=False,
-    continuous_update=True,
-    orientation='horizontal',
-    readout=True,
-    readout_format='d'
+    disabled=False
 )
 
-x0_slider = widgets.FloatSlider(
+x0_text = widgets.BoundedFloatText(
     value=x0,
     min=0.,
     max=20.,
     step=0.01,
     description='Estimated x0:',
-    disabled=False,
-    continuous_update=True,
-    orientation='horizontal',
-    readout=True,
-    readout_format='.4f'
+    disabled=False
 )
 
 accept_button = widgets.Button(
@@ -234,34 +218,28 @@ save_button = widgets.Button(description="Save")
 save_box = widgets.Box([file_text, save_button])
 
 # Genera un link entre widgets para asegurar N<=Z
-dl = widgets.dlink((Z_slider, 'value'), (N_slider, 'max'))
+dl = widgets.dlink((Z_text, 'value'), (N_text, 'max'))
 
-# Activa/desactiva x0_slider para átomos ionizados/neutros
+# Activa/desactiva x0_text para átomos ionizados/neutros
 def update_x0(Z, N):
     if N==Z: # caso átomo neutro
         # Desactiva el widget de x0
-        x0_slider.disabled = True
+        x0_text.disabled = True
     else: # caso ion
         # Activa el widget de x0
-        x0_slider.disabled = False
+        x0_text.disabled = False
 
 
 #### Función para crear figuras interactivas ####
 #################################################
 def calculate():
     # Genera gráfico interactivo y botón de aceptar
-    output_Fi = interactive(calculate_Fi, Z=Z_slider, N=N_slider, npt=npt_slider, x0=x0_slider);
-    x0_control = interactive(update_x0, Z=Z_slider, N=N_slider);
+    output_Fi = interactive(calculate_Fi, Z=Z_text, N=N_text, npt=npt_text, x0=x0_text);
+    x0_control = interactive(update_x0, Z=Z_text, N=N_text);
     display(output_Fi)
     display(accept_button)
     
     def Accept(b): # Solucion aceptada, mostrar resultados
-        # Desactiva widgets
-        #Z_slider.close()
-        #N_slider.close()
-        #npt_slider.close()
-        #x0_slider.close()
-        #accept_button.close()
         clear_output();
     
         #   r0, K, Ef, r, Rho, Zef = calculate_Rho_Zef(*output.result)
@@ -280,7 +258,7 @@ def calculate():
 
 #### Función para comprobación interactiva del ajuste del potencial ####
 ########################################################################
-from orbitals import _pot_GSZ, H_slider, D_slider
+from orbitals import _pot_GSZ, H_text, D_text
 
 # Valores por defecto
 V = np.zeros_like(r)
@@ -329,13 +307,13 @@ def check_fit():
         Z, N = np.loadtxt(filename, skiprows=2, unpack=True, usecols = (0, 1), max_rows=1)
         r, V = np.loadtxt(filename, skiprows=5, unpack=True, usecols = (3, 5))
 
-        # Activa H_slider y D_slider
+        # Activa H_text y D_text
         # (pueden estar desactivados si se está ejecutando orbitals con otro pontecial)
-        H_slider.disabled = False
-        D_slider.disabled = False
+        H_text.disabled = False
+        D_text.disabled = False
         # Genera figura interactiva donde se pueden cambiar H y D
         output_V = interactive(update_fig_V, r=fixed(r), V=fixed(V), Z=fixed(Z), N=fixed(N),
-                               H=H_slider, D=D_slider)
+                               H=H_text, D=D_text)
         display(output_V)
 
     load_button.on_click(Load)
