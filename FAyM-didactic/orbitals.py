@@ -191,10 +191,10 @@ def calculate_P(model=model, Z=Z, N=N, A=A, a1=a1, a2=a2, H=H, D=D, npt=npt, rmc
     line_P.x = r[1:]
     line_P.y = P[1:]
     fig_P.update_xaxes(range=[-0.01*rmc, 1.01*rmc])
+    fig_P.update_layout(title_text='Maximum of P at ' + f'{P.max():2.3}')
     fig_P.show()
 
     return model, Z, N, A, a1, a2, H, D, npt, rmc, E, L, r, P
-
 
 #### Widgets de las figuras interactivas ####
 #############################################
