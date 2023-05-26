@@ -88,7 +88,7 @@ def save(model, Z, N, A, a1, a2, H, D, npt, rmc, E, L, r, P, filename):
     f = open(filename,"w")
     f.write( datetime.now().strftime('%Y-%m-%d %H:%M:%S') + "\n" )
     f.write("Calculation of atomic orbitals for a central potential\n")
-    f.write("Solving Schrödinger eq. by variable sptep-size Numerov method\n")
+    f.write("Solving Schrodinger eq. by variable sptep-size Numerov method\n")
     param_text = "L" + "\t" + "E(a.u.)" + "\t  " + "r_max(a.u.)" + "\t" + "N. points"
     param_values = str(L) + "\t" + str(E) + "\t  " + str(rmc) + "\t\t" + str(npt)
 
