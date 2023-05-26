@@ -1,4 +1,4 @@
-﻿# Solving Schrodinger eq. for central potentials by variable step size Numerov method
+# Solving Schrodinger eq. for central potentials by variable step size Numerov method
 # Francisco Blanco: c version in 2005
 # Francisco Blanco: python english version in 2021
 
@@ -106,18 +106,25 @@ def runSave():
     f=open(Ent_F.get(),"w")
     f.write( datetime.now().strftime('%Y-%m-%d %H:%M:%S')+"\n" )
     f.write("Calculation of atomic orbitals for a central potential"+"\n")
-    f.write("Solving Schrödinger eq. by variable sptep-size Numerov method"+"\n")
+    f.write("Solving Schrodinger eq. by variable sptep-size Numerov method"+"\n")
+    param_text="L"+"\t"+"E(a.u.)"+"\t  "+"r_max(a.u.)"+"\t"+"N. points"
+    param_values=Ent_C_L.get()+"\t"+Ent_C_E.get()+"\t  "+Ent_C_Rmc.get()+"\t\t"+Ent_C_Npt.get()
     if TipoV=="Hdg":
-        f.write("Hydrogenic potential -Z/r, Z="+Ent_Hdg_Z.get()+"\n")
+        f.write("Hydrogenic potential -Z/r"+"\n")
+        f.write("Z"+"\t"+param_text+"\n")
+        f.write(Ent_Hdg_Z.get()+"\t"+param_values+"\n")
     if TipoV=="SdR":
-        f.write("S. del Rio potential, Z="+Ent_SdR_Z.get()+"\n")
-        f.write("A="+Ent_SdR_A.get()+" a1="+Ent_SdR_a1.get()+" a2="+Ent_SdR_a2.get()+"/n")
+        f.write("S. del Rio potential"+"\n")
+        f.write("Z"+"\t"+"A"+"\t"+"a1"+"\t"+"a2"+"\t"+param_text+"\n")
+        f.write(Ent_SdR_Z.get()+"\t"+Ent_SdR_A.get()+"\t"+Ent_SdR_a1.get()+"\t"+Ent_SdR_a2.get()
+                +"\t"+param_values+"\n")
     if TipoV=="GSZ":
         f.write("Green-Sellin-Zachor potential, Z="+Ent_GSZ_Z.get()+"\n")
         f.write("N=",Ent_GSZ_N.get()+" H="+Ent_GSZ_H.get()+" D=",Ent_GSZ_D.get()+"/n")
-    f.write(" Angular momentum L="+Ent_C_L.get())
-    f.write(" Energy(a.u.)="+Ent_C_E.get())
-    f.write(" Max. calculation radius="+Ent_C_Rmc.get()+"\n")
+        f.write("Green-Sellin-Zachor potential"+"\n")
+        f.write("Z"+"\t"+"N"+"\t"+"H"+"\t"+"D"+"\t"+param_text+"\n")
+        f.write(Ent_GSZ_Z.get()+"\t"+Ent_GSZ_N.get()+"\t"+Ent_GSZ_H.get()+"\t"+Ent_GSZ_D.get()
+                +"\t"+param_values+"\n")
     f.write("Normalised radial wavefunction P(r) : ")
     f.write("values at "+Ent_C_Npt.get()+" points"+"\n")
     f.write(f" Format r(i),P(i) with r(i)={cri:8.6}*i^2"+"\n")
