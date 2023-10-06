@@ -1,6 +1,7 @@
 # Solving Schrodinger eq. for central potentials by variable step size Numerov method
 # Francisco Blanco: c version in 2005
 # Francisco Blanco: python english version in 2021
+# Jaime Rosado: output format adapted to atomictools
 
 import tkinter #importa módulo de ventanas y botones
 from math import sqrt,exp
@@ -33,6 +34,38 @@ def Fpotencial(r): #devuelve funcion f con el potencial elegido
         if (r/D>75): V=-(Z-N+1)/r 
         else: V=-(Z-N+1+(N-1)/(1+H*(exp(r/D)-1)))/r
     return L*(L+1)/(r**2)-2*E+2*V
+
+from datetime import datetime #manipulación de fechas y horas
+def runSave():
+    runCalc() #primero actualiza calculo por si ha habido cambios
+    Npt=int(Ent_C_Npt.get()); Rmc=float(Ent_C_Rmc.get()); cri=Rmc/(Npt**2)
+    f=open(Ent_F.get(),"w")
+    f.write( datetime.now().strftime('%Y-%m-%d %H:%M:%S')+"\n" )
+    f.write("Calculation of atomic orbitals for a central potential"+"\n")
+    f.write("Solving Schrodinger eq. by variable sptep-size Numerov method"+"\n")
+    param_text="L"+"\t"+"E(a.u.)"+"\t  "+"r_max(a.u.)"+"\t"+"N. points"
+    param_values=Ent_C_L.get()+"\t"+Ent_C_E.get()+"\t  "+Ent_C_Rmc.get()+"\t\t"+Ent_C_Npt.get()
+    if TipoV=="Hdg":
+        f.write("Hydrogenic potential -Z/r"+"\n")
+        f.write("Z"+"\t"+param_text+"\n")
+        f.write(Ent_Hdg_Z.get()+"\t"+param_values+"\n")
+    if TipoV=="SdR":
+        f.write("S. del Rio potential"+"\n")
+        f.write("Z"+"\t"+"A"+"\t"+"a1"+"\t"+"a2"+"\t"+param_text+"\n")
+        f.write(Ent_SdR_Z.get()+"\t"+Ent_SdR_A.get()+"\t"+Ent_SdR_a1.get()+"\t"+Ent_SdR_a2.get()
+                +"\t"+param_values+"\n")
+    if TipoV=="GSZ":
+       #f.write("Green-Sellin-Zachor potential, Z="+Ent_GSZ_Z.get()+"\n")
+       #f.write("N=",Ent_GSZ_N.get()+" H="+Ent_GSZ_H.get()+" D=",Ent_GSZ_D.get()+"/n")
+        f.write("Green-Sellin-Zachor potential"+"\n")
+        f.write("Z"+"\t"+"N"+"\t"+"H"+"\t"+"D"+"\t"+param_text+"\n")
+        f.write(Ent_GSZ_Z.get()+"\t"+Ent_GSZ_N.get()+"\t"+Ent_GSZ_H.get()+"\t"+Ent_GSZ_D.get()
+                +"\t"+param_values+"\n")
+    f.write("Normalised radial wavefunction P(r) : ")
+    f.write("values at "+Ent_C_Npt.get()+" points"+"\n")
+    f.write(f" Format r(i),P(i) with r(i)={cri:8.6}*i^2"+"\n")
+    for i in range(1,Npt+1):f.write(f"{r[i]:< 8.6e}  {P[i]:< 8.6e}\n")
+    f.close
 
 def runCalc():      #si se pulsa actualizar cálculo
     "resuelve eq. schrodinger por método numrov con la f.de o. en p[0 a Npt]"
@@ -99,43 +132,11 @@ def plotP():
     #   plt.title("..."}
     plt.show()
 
-from datetime import datetime #manipulación de fechas y horas
-def runSave():
-    runCalc() #primero actualiza calculo por si ha habido cambios
-    Npt=int(Ent_C_Npt.get()); Rmc=float(Ent_C_Rmc.get()); cri=Rmc/(Npt**2)
-    f=open(Ent_F.get(),"w")
-    f.write( datetime.now().strftime('%Y-%m-%d %H:%M:%S')+"\n" )
-    f.write("Calculation of atomic orbitals for a central potential"+"\n")
-    f.write("Solving Schrodinger eq. by variable sptep-size Numerov method"+"\n")
-    param_text="L"+"\t"+"E(a.u.)"+"\t  "+"r_max(a.u.)"+"\t"+"N. points"
-    param_values=Ent_C_L.get()+"\t"+Ent_C_E.get()+"\t  "+Ent_C_Rmc.get()+"\t\t"+Ent_C_Npt.get()
-    if TipoV=="Hdg":
-        f.write("Hydrogenic potential -Z/r"+"\n")
-        f.write("Z"+"\t"+param_text+"\n")
-        f.write(Ent_Hdg_Z.get()+"\t"+param_values+"\n")
-    if TipoV=="SdR":
-        f.write("S. del Rio potential"+"\n")
-        f.write("Z"+"\t"+"A"+"\t"+"a1"+"\t"+"a2"+"\t"+param_text+"\n")
-        f.write(Ent_SdR_Z.get()+"\t"+Ent_SdR_A.get()+"\t"+Ent_SdR_a1.get()+"\t"+Ent_SdR_a2.get()
-                +"\t"+param_values+"\n")
-    if TipoV=="GSZ":
-        f.write("Green-Sellin-Zachor potential, Z="+Ent_GSZ_Z.get()+"\n")
-        f.write("N=",Ent_GSZ_N.get()+" H="+Ent_GSZ_H.get()+" D=",Ent_GSZ_D.get()+"/n")
-        f.write("Green-Sellin-Zachor potential"+"\n")
-        f.write("Z"+"\t"+"N"+"\t"+"H"+"\t"+"D"+"\t"+param_text+"\n")
-        f.write(Ent_GSZ_Z.get()+"\t"+Ent_GSZ_N.get()+"\t"+Ent_GSZ_H.get()+"\t"+Ent_GSZ_D.get()
-                +"\t"+param_values+"\n")
-    f.write("Normalised radial wavefunction P(r) : ")
-    f.write("values at "+Ent_C_Npt.get()+" points"+"\n")
-    f.write(f" Format r(i),P(i) with r(i)={cri:8.6}*i^2"+"\n")
-    for i in range(1,Npt+1):f.write(f"{r[i]:< 8.6e}  {P[i]:< 8.6e}\n")
-    f.close
-
 #genera ventana con toda la información y opciones
 W1=tkinter.Tk()
 W1.geometry("410x400")
 W1.title("Calculation of atomic orbitals for a Central Potential")
-tkinter.Label(text="(C)F.Blanco 2021, Dpto. EMFTEL UCM").place(x=0,y=380)
+tkinter.Label(text="(C)F.Blanco 2022, Dpto. EMFTEL UCM").place(x=0,y=380)
 
 BotHdg=tkinter.Button(text= "V Hydrogenic",command=runHdg).place(x=0,y=0)
 tkinter.Label(text="Z=").place(x=0,y=35); #parámetro Z
